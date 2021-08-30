@@ -17,9 +17,7 @@ function checksExistsUserAccount(request, response, next) {
     request.user = user
     return next()
   } else {
-    return response.status(404).json({
-      "error": "Not authorized"
-    })
+    return response.status(404)
   }
 }
 
@@ -29,14 +27,31 @@ function checksCreateTodosUserAvailability(request, response, next) {
   if (user.pro || user.todos.length < 10) {
     return next()
   } else {
-    return response.status(403).json({
-      "error": 'Forbidden'
-    })
+    return response.status(403)
   }
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers
+  const { id } = request.params
+
+  const user = users.find(u => u.username === username)
+  if (!user) {
+    return response.status(404)
+  }
+
+  if (!validate(id)) {
+    return response.status(400)
+  }
+
+  const todo = user.todos.find(t => t.id === id)
+  if (!todo) {
+    return response.status(404)
+  }
+
+  request.user = user
+  request.todo = todo
+  return next()
 }
 
 function findUserById(request, response, next) {
