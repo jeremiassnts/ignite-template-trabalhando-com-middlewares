@@ -10,7 +10,17 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers
+  var user = users.find(u => u.username === username)
+
+  if (user) {
+    request.user = user
+    return next()
+  } else {
+    return response.status(404).json({
+      "error": "Not authorized"
+    })
+  }
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
