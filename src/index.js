@@ -17,7 +17,9 @@ function checksExistsUserAccount(request, response, next) {
     request.user = user
     return next()
   } else {
-    return response.status(404)
+    return response.status(404).json({
+      "error": "Invalid username"
+    })
   }
 }
 
@@ -27,7 +29,9 @@ function checksCreateTodosUserAvailability(request, response, next) {
   if (user.pro || user.todos.length < 10) {
     return next()
   } else {
-    return response.status(403)
+    return response.status(403).json({
+      "error": "Can't create new todos"
+    })
   }
 }
 
@@ -37,16 +41,22 @@ function checksTodoExists(request, response, next) {
 
   const user = users.find(u => u.username === username)
   if (!user) {
-    return response.status(404)
+    return response.status(404).json({
+      "error": "Invalid username"
+    })
   }
 
   if (!validate(id)) {
-    return response.status(400)
+    return response.status(400).json({
+      "error": "Invalid todo id"
+    })
   }
 
   const todo = user.todos.find(t => t.id === id)
   if (!todo) {
-    return response.status(404)
+    return response.status(404).json({
+      "error": "Invalid todo id"
+    })
   }
 
   request.user = user
@@ -62,7 +72,9 @@ function findUserById(request, response, next) {
     request.user = user
     return next()
   } else {
-    return response.status(404)
+    return response.status(404).json({
+      "error": "Invalid user id"
+    })
   }
 }
 
